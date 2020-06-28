@@ -27,7 +27,7 @@ class LondonResidentsControllerSpec extends PlaySpec with GuiceOneAppPerTest wit
       when(mockService.getAllLondonResidents).thenReturn(Future.successful(londonResidents))
 
       val controller = new LondonResidentsController(mockService, stubControllerComponents())
-      val home = controller.viewLondonResidents().apply(FakeRequest(GET, "/london-residents"))
+      val home = controller.viewLondonResidents().apply(FakeRequest(GET, "/view-london-residents"))
 
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
@@ -37,7 +37,7 @@ class LondonResidentsControllerSpec extends PlaySpec with GuiceOneAppPerTest wit
     "render the london residents page from the application" in {
 
       val controller = inject[LondonResidentsController]
-      val home = controller.viewLondonResidents().apply(FakeRequest(GET, "/london-residents"))
+      val home = controller.viewLondonResidents().apply(FakeRequest(GET, "/view-london-residents"))
 
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
