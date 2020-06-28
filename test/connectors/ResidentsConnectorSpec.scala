@@ -1,6 +1,5 @@
 package connectors
 
-import com.fasterxml.jackson.core.JsonParseException
 import mockws.MockWSHelpers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
@@ -53,7 +52,7 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
         case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { Ok(happyJson) }
       }
 
-      val connector = new ResidentsConnector(ws, stubControllerComponents())
+      val connector = new ResidentsConnector(ws)
 
       val result = connector.getAllResidents.futureValue
 
@@ -74,7 +73,7 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
         case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { Ok(brokenJson) }
       }
 
-      val connector = new ResidentsConnector(ws, stubControllerComponents())
+      val connector = new ResidentsConnector(ws)
 
       val result = connector.getAllResidents.futureValue
 
@@ -87,7 +86,7 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
         case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { NotFound("Oops") }
       }
 
-      val connector = new ResidentsConnector(ws, stubControllerComponents())
+      val connector = new ResidentsConnector(ws)
 
       val result = connector.getAllResidents.futureValue
 
@@ -101,7 +100,7 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
         case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { BadGateway("Oops") }
       }
 
-      val connector = new ResidentsConnector(ws, stubControllerComponents())
+      val connector = new ResidentsConnector(ws)
 
       val result = connector.getAllResidents.futureValue
 

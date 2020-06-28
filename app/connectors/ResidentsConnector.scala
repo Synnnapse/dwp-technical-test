@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ResidentsConnector @Inject() (ws: WSClient, val controllerComponents: ControllerComponents) {
+class ResidentsConnector @Inject() (ws: WSClient) {
 
   private val allResidentsUrl = "https://bpdts-test-app.herokuapp.com/users"
 
