@@ -1,0 +1,21 @@
+@import models.Resident
+
+@(londonResidents: Seq[Resident])
+
+@main("London residents") {
+  <h1>London residents</h1>
+
+
+  <table style="width:100%">
+    @for(resident <- londonResidents){
+      <tr>
+        <th>@resident.first_name</th>
+        <th>@resident.last_name</th>
+        <th>@resident.email</th>
+        <th>@resident.ip_address</th>
+        <th>@resident.latitude</th>
+        <th>@resident.longitude</th>
+      </tr>
+    }
+  </table>
+}

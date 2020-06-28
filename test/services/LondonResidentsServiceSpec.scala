@@ -44,14 +44,14 @@ class LondonResidentsServiceSpec extends PlaySpec with GuiceOneAppPerTest with I
 
       val mockConnector = mock[ResidentsConnector]
 
-      val someLondonResidents = Seq(
+      val onlyOneLondonResident = Seq(
         Resident(1, "Canary", "Wharf", "email", "ip address", 51.5031, -0.0239),
         Resident(4, "Manchester", "Town", "email", "ip address", 53.483959, -2.244644),
         Resident(5, "Lancaster", "Town", "email", "ip address", 54.047001, -2.801000),
         Resident(6, "Newcastle", "Town", "email", "ip address", 54.966667, -1.600000)
       )
 
-      when(mockConnector.getAllResidents).thenReturn(Future.successful(Right(someLondonResidents)))
+      when(mockConnector.getAllResidents).thenReturn(Future.successful(Right(onlyOneLondonResident)))
 
       val service = new LondonResidentsService(mockConnector)
       val result = service.getAllLondonResidents.futureValue
@@ -63,13 +63,13 @@ class LondonResidentsServiceSpec extends PlaySpec with GuiceOneAppPerTest with I
 
       val mockConnector = mock[ResidentsConnector]
 
-      val someLondonResidents = Seq(
+      val noLondonResidents = Seq(
         Resident(4, "Manchester", "Town", "email", "ip address", 53.483959, -2.244644),
         Resident(5, "Lancaster", "Town", "email", "ip address", 54.047001, -2.801000),
         Resident(6, "Newcastle", "Town", "email", "ip address", 54.966667, -1.600000)
       )
 
-      when(mockConnector.getAllResidents).thenReturn(Future.successful(Right(someLondonResidents)))
+      when(mockConnector.getAllResidents).thenReturn(Future.successful(Right(noLondonResidents)))
 
       val service = new LondonResidentsService(mockConnector)
       val result = service.getAllLondonResidents.futureValue
