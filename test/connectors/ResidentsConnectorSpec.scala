@@ -1,5 +1,6 @@
 package connectors
 
+import com.fasterxml.jackson.core.JsonParseException
 import mockws.MockWSHelpers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
@@ -16,7 +17,7 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
 
   "Residents Connector getAllResidents" should {
 
-    "Return a valid response from the API" in {
+    "Return a JsSuccess when given valid json from the API" in {
 
       val happyJson = """[
                         |{
@@ -56,12 +57,58 @@ class ResidentsConnectorSpec extends PlaySpec with GuiceOneAppPerTest with Injec
 
       val result = connector.getAllResidents.futureValue
 
-      result.isSuccess mustBe true
+      result.isRight mustBe true
+
       result.map(
         residents => {
           residents.size mustBe 3
         }
       )
+    }
+
+    "Return an error response when given invalid json from the API and an exception is caught" in {
+
+      val brokenJson = """All broken""".stripMargin
+
+      val ws = mockws.MockWS {
+        case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { Ok(brokenJson) }
+      }
+
+      val connector = new ResidentsConnector(ws, stubControllerComponents())
+
+      val result = connector.getAllResidents.futureValue
+
+      result.isLeft mustBe true
+    }
+
+    "Return an error response when the API returns a 404" in {
+
+      val ws = mockws.MockWS {
+        case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { NotFound("Oops") }
+      }
+
+      val connector = new ResidentsConnector(ws, stubControllerComponents())
+
+      val result = connector.getAllResidents.futureValue
+
+      result.isLeft mustBe true
+      result.left.map(error => error.body mustBe "Not found")
+    }
+
+    "Return an the appropriate status and an error response when the API returns another status" in {
+
+      val ws = mockws.MockWS {
+        case (GET, "https://bpdts-test-app.herokuapp.com/users") => Action { BadGateway("Oops") }
+      }
+
+      val connector = new ResidentsConnector(ws, stubControllerComponents())
+
+      val result = connector.getAllResidents.futureValue
+
+      result.isLeft mustBe true
+      result.left.map(error => {
+        error.body mustBe "Unexpected response, status 502 returned"
+      })
     }
   }
 }
